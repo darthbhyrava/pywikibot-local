@@ -803,6 +803,13 @@ class TestFactoryGenerator(DefaultSiteTestCase):
         self.assertIsNotNone(gen)
         self.assertPagesInNamespaces(gen, 1)
 
+    def test_recentchanges_timespan(self):
+        """Test recentchanges generator with delay and block params."""
+        gf = pagegenerators.GeneratorFactory(site=self.site)
+        gf.handleArg('-recentchanges:120,70')
+        gen = gf.getCombinedGenerator()
+        self.assertIsNotNone(gen)
+
     def test_recentchanges_ns_default(self):
         """Test recentchanges generator."""
         gf = pagegenerators.GeneratorFactory(site=self.site)
