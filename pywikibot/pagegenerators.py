@@ -31,6 +31,7 @@ import re
 import sys
 import time
 
+from datetime import timedelta
 from warnings import warn
 
 import pywikibot
@@ -180,7 +181,16 @@ parameterHelp = u"""\
 
 -recentchanges    Work on the pages with the most recent changes. If
                   given as -recentchanges:x, will work on the x most recently
-                  changed pages.
+                  changed pages. If given as -recentchanges:delay, block it will
+                  work on pages changed between 'delay' minutes and 'block'
+                  timespan.
+
+                  Default value of x is 60
+
+                  Examples:
+                  -recentchanges:20 will give the 20 most recently changed pages
+                  -recentchanges:120,70 will give pages with contraints of 120 delay
+                  minutes and 70 minutes timespan
 
 -unconnectedpages Work on the most recent unconnected pages to the Wikibase
                   repository. Given as -unconnectedpages:x, will work on the
@@ -673,11 +683,36 @@ class GeneratorFactory(object):
             gen = RandomPageGenerator(total=intNone(value), site=self.site,
                                       namespace=namespaces)
         elif arg == '-recentchanges':
-            value = int(value) if value else 60
-            gen = RecentChangesPageGenerator(namespaces=self.namespaces,
-                                             total=value,
-                                             site=self.site,
-                                             _filter_unique=self._filter_unique)
+            if value:
+                try:
+                    value = int(value)
+                    are_params_timespan = False
+                except:
+                    params = value.split(',')
+                    if len(params) == 2:
+                        are_params_timespan = True
+                        delay, block = params
+                    else:
+                        are_params_timespan = False
+                        raise ValueError
+            else:
+                value = 60
+                are_params_timespan = False
+
+            if are_params_timespan:
+                ts_site = self.site
+                rcstart = ts_site.getcurrenttime() + timedelta(minutes=-(delay + block))
+                rcend = ts_site.getcurrenttime() + timedelta(minutes=-delay)
+                gen = RecentChangesPageGenerator(namespaces=self.namespaces,
+                                                 start=rcstart,
+                                                 end=rcend,
+                                                 site=ts_site,
+                                                 _filter_unique=self._filter_unique)
+            else:
+                gen = RecentChangesPageGenerator(namespaces=self.namespaces,
+                                                 total=value,
+                                                 site=self.site,
+                                                 _filter_unique=self._filter_unique)
         elif arg == '-liverecentchanges':
             gen = LiveRCPageGenerator(self.site, total=intNone(value))
         elif arg == '-file':
