@@ -18,7 +18,7 @@ import re
 import socket
 import StringIO
 
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
 import pywikibot
 

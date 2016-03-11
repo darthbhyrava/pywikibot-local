@@ -26,7 +26,7 @@ __version__ = '$Id$'
 
 import os
 
-import BeautifulSoup
+from bs4 import BeautifulSoup
 
 import pywikibot
 
@@ -48,7 +48,7 @@ def get_imagelinks(url):
     links = []
     uo = URLopener()
     file = uo.open(url)
-    soup = BeautifulSoup.BeautifulSoup(file.read())
+    soup = BeautifulSoup(file.read())
     file.close()
     if not shown:
         tagname = "a"
