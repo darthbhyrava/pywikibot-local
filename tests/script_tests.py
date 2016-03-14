@@ -42,9 +42,9 @@ script_deps = {
     # Note: package 'lunatic-python' provides module 'lua'
 
     'flickrripper': ['flickrapi'],
-    'imageharvest': ['BeautifulSoup'],
+    'imageharvest': ['BeautifulSoup4'],
     'match_images': ['PIL.ImageTk'],
-    'panoramiopicker': ['BeautifulSoup'],
+    'panoramiopicker': ['BeautifulSoup4'],
     'states_redirect': ['pycountry'],
     'patrol': ['mwparserfromhell'],
 }
