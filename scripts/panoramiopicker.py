@@ -18,7 +18,10 @@ import re
 import socket
 import StringIO
 
-from BeautifulSoup import BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+except ImportError as bserror:
+    BeautifulSoup = False
 
 import pywikibot
 
@@ -80,6 +83,8 @@ def findDuplicateImages(photo, site=None):
 
 def getLicense(photoInfo):
     """Adding license to the Panoramio API with a beautiful soup hack."""
+    if not BeautifulSoup:
+        raise bserror
     photoInfo['license'] = u'c'
     page = urlopen(photoInfo.get(u'photo_url'))
     data = page.read()

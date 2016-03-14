@@ -26,7 +26,10 @@ __version__ = '$Id$'
 
 import os
 
-import BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+except ImportError as bserror:
+    BeautifulSoup = False
 
 import pywikibot
 
@@ -45,10 +48,12 @@ else:
 
 def get_imagelinks(url):
     """Given a URL, get all images linked to by the page at that URL."""
+    if not BeautifulSoup:
+        raise bserror
     links = []
     uo = URLopener()
     file = uo.open(url)
-    soup = BeautifulSoup.BeautifulSoup(file.read())
+    soup = BeautifulSoup(file.read())
     file.close()
     if not shown:
         tagname = "a"
